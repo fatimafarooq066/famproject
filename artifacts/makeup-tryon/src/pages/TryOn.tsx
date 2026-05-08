@@ -509,7 +509,7 @@ export default function TryOn() {
     <div className="min-h-screen bg-[#FAF6F2] flex flex-col font-sans">
       {/* Header */}
       <header className="h-14 px-6 flex items-center justify-between bg-white border-b border-[#EDE6DF] sticky top-0 z-20">
-        <span className="text-xl font-serif font-semibold text-[#7B1C2E]">GlowAR</span>
+        <span className="text-xl font-serif font-semibold text-[#7B1C2E]">FAM Fashion</span>
         <span className="text-sm text-[#9E8A7C] font-medium tracking-wide hidden sm:block">AI Virtual Try-On</span>
         {mode === "result" && (
           <div className="flex gap-2">
