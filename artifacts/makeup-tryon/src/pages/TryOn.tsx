@@ -23,39 +23,39 @@ interface Product {
 /* ─────────────────────────── Products ─────────────────────────── */
 const PRODUCTS: Product[] = [
   // LIPS
-  { id: 1,  name: "Ruby Woo",          shade: "Retro Matte",        category: "lips",       color: "#9B1B1B", price: 22, brand: "MAC",               suitableFor: ["medium","tan","deep"] },
-  { id: 2,  name: "Velvet Teddy",       shade: "Matte",              category: "lips",       color: "#9B7155", price: 22, brand: "MAC",               suitableFor: ["light","medium"] },
-  { id: 3,  name: "Diva",               shade: "Matte",              category: "lips",       color: "#572137", price: 22, brand: "MAC",               suitableFor: ["tan","deep"] },
-  { id: 4,  name: "Pillow Talk",        shade: "Matte Revolution",   category: "lips",       color: "#C07A8C", price: 38, brand: "Charlotte Tilbury", suitableFor: ["fair","light"] },
-  { id: 5,  name: "Walk of No Shame",   shade: "Matte",              category: "lips",       color: "#B83A3A", price: 38, brand: "Charlotte Tilbury", suitableFor: ["medium","tan"] },
-  { id: 6,  name: "Vienna",             shade: "Soft Matte",         category: "lips",       color: "#C4A0A8", price: 10, brand: "NYX",               suitableFor: ["fair","light","medium"] },
-  { id: 7,  name: "Cannes",             shade: "Soft Matte",         category: "lips",       color: "#B22222", price: 10, brand: "NYX",               suitableFor: ["medium","tan","deep"] },
-  { id: 8,  name: "Jungle Red",         shade: "Satin Lip Pencil",   category: "lips",       color: "#C41E3A", price: 36, brand: "NARS",              suitableFor: ["medium","tan","deep"] },
-  { id: 9,  name: "Dragon Girl",        shade: "Powermatte",         category: "lips",       color: "#8B1A3A", price: 36, brand: "NARS",              suitableFor: ["tan","deep"] },
-  { id: 10, name: "Raspberry Red",      shade: "Colour Riche",       category: "lips",       color: "#C0396B", price: 12, brand: "L'Oréal",           suitableFor: ["medium","tan","deep"] },
+  { id: 1,  name: "Ruby Woo",          shade: "Retro Matte",        category: "lips",       color: "#9B1B1B", price: 6200,  brand: "MAC",               suitableFor: ["medium","tan","deep"] },
+  { id: 2,  name: "Velvet Teddy",       shade: "Matte",              category: "lips",       color: "#9B7155", price: 6200,  brand: "MAC",               suitableFor: ["light","medium"] },
+  { id: 3,  name: "Diva",               shade: "Matte",              category: "lips",       color: "#572137", price: 6200,  brand: "MAC",               suitableFor: ["tan","deep"] },
+  { id: 4,  name: "Pillow Talk",        shade: "Matte Revolution",   category: "lips",       color: "#C07A8C", price: 10700, brand: "Charlotte Tilbury", suitableFor: ["fair","light"] },
+  { id: 5,  name: "Walk of No Shame",   shade: "Matte",              category: "lips",       color: "#B83A3A", price: 10700, brand: "Charlotte Tilbury", suitableFor: ["medium","tan"] },
+  { id: 6,  name: "Vienna",             shade: "Soft Matte",         category: "lips",       color: "#C4A0A8", price: 2800,  brand: "NYX",               suitableFor: ["fair","light","medium"] },
+  { id: 7,  name: "Cannes",             shade: "Soft Matte",         category: "lips",       color: "#B22222", price: 2800,  brand: "NYX",               suitableFor: ["medium","tan","deep"] },
+  { id: 8,  name: "Jungle Red",         shade: "Satin Lip Pencil",   category: "lips",       color: "#C41E3A", price: 10100, brand: "NARS",              suitableFor: ["medium","tan","deep"] },
+  { id: 9,  name: "Dragon Girl",        shade: "Powermatte",         category: "lips",       color: "#8B1A3A", price: 10100, brand: "NARS",              suitableFor: ["tan","deep"] },
+  { id: 10, name: "Raspberry Red",      shade: "Colour Riche",       category: "lips",       color: "#C0396B", price: 3400,  brand: "L'Oréal",           suitableFor: ["medium","tan","deep"] },
   // EYES
-  { id: 11, name: "Half Baked",         shade: "Eyeshadow",          category: "eyes",       color: "#A0693C", price: 24, brand: "Urban Decay",       suitableFor: ["fair","light","medium","tan","deep"] },
-  { id: 12, name: "Midnight Cowboy",    shade: "Eyeshadow",          category: "eyes",       color: "#C4966A", price: 24, brand: "Urban Decay",       suitableFor: ["fair","light","medium"] },
-  { id: 13, name: "Club",               shade: "Eyeshadow",          category: "eyes",       color: "#4A3728", price: 22, brand: "MAC",               suitableFor: ["fair","light","medium","tan","deep"] },
-  { id: 14, name: "Woodwinked",         shade: "Eyeshadow",          category: "eyes",       color: "#B8733C", price: 22, brand: "MAC",               suitableFor: ["medium","tan","deep"] },
-  { id: 15, name: "Night Rider",        shade: "Eyeshadow",          category: "eyes",       color: "#1C1826", price: 36, brand: "NARS",              suitableFor: ["fair","light","medium","tan","deep"] },
-  { id: 16, name: "Canyon (Soft Glam)", shade: "Palette",            category: "eyes",       color: "#C4905A", price: 45, brand: "Anastasia BH",      suitableFor: ["medium","tan","deep"] },
-  { id: 17, name: "Pillow Talk Rose",   shade: "Luxury Palette",     category: "eyes",       color: "#C4A0A0", price: 68, brand: "Charlotte Tilbury", suitableFor: ["fair","light"] },
-  { id: 18, name: "Obsidian Smoky",     shade: "Eyeshadow Palette",  category: "eyes",       color: "#2C1F38", price: 58, brand: "Huda Beauty",       suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 11, name: "Half Baked",         shade: "Eyeshadow",          category: "eyes",       color: "#A0693C", price: 6700,  brand: "Urban Decay",       suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 12, name: "Midnight Cowboy",    shade: "Eyeshadow",          category: "eyes",       color: "#C4966A", price: 6700,  brand: "Urban Decay",       suitableFor: ["fair","light","medium"] },
+  { id: 13, name: "Club",               shade: "Eyeshadow",          category: "eyes",       color: "#4A3728", price: 6200,  brand: "MAC",               suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 14, name: "Woodwinked",         shade: "Eyeshadow",          category: "eyes",       color: "#B8733C", price: 6200,  brand: "MAC",               suitableFor: ["medium","tan","deep"] },
+  { id: 15, name: "Night Rider",        shade: "Eyeshadow",          category: "eyes",       color: "#1C1826", price: 10100, brand: "NARS",              suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 16, name: "Canyon (Soft Glam)", shade: "Palette",            category: "eyes",       color: "#C4905A", price: 12600, brand: "Anastasia BH",      suitableFor: ["medium","tan","deep"] },
+  { id: 17, name: "Pillow Talk Rose",   shade: "Luxury Palette",     category: "eyes",       color: "#C4A0A0", price: 19000, brand: "Charlotte Tilbury", suitableFor: ["fair","light"] },
+  { id: 18, name: "Obsidian Smoky",     shade: "Eyeshadow Palette",  category: "eyes",       color: "#2C1F38", price: 16200, brand: "Huda Beauty",       suitableFor: ["fair","light","medium","tan","deep"] },
   // BLUSH
-  { id: 19, name: "Orgasm",             shade: "Blush",              category: "blush",      color: "#E8906A", price: 34, brand: "NARS",              suitableFor: ["fair","light","medium"] },
-  { id: 20, name: "Deep Throat",        shade: "Blush",              category: "blush",      color: "#F0B0C0", price: 34, brand: "NARS",              suitableFor: ["fair","light"] },
-  { id: 21, name: "Exhibit A",          shade: "Blush",              category: "blush",      color: "#E05A40", price: 34, brand: "NARS",              suitableFor: ["medium","tan","deep"] },
-  { id: 22, name: "Peaches",            shade: "Powder Blush",       category: "blush",      color: "#F0A060", price: 28, brand: "MAC",               suitableFor: ["fair","light"] },
-  { id: 23, name: "Mocha",              shade: "Powder Blush",       category: "blush",      color: "#9B6B5A", price: 28, brand: "MAC",               suitableFor: ["tan","deep"] },
-  { id: 24, name: "Fiji",               shade: "Cheeks Out",         category: "blush",      color: "#C47480", price: 22, brand: "Fenty Beauty",      suitableFor: ["medium","tan"] },
+  { id: 19, name: "Orgasm",             shade: "Blush",              category: "blush",      color: "#E8906A", price: 9500,  brand: "NARS",              suitableFor: ["fair","light","medium"] },
+  { id: 20, name: "Deep Throat",        shade: "Blush",              category: "blush",      color: "#F0B0C0", price: 9500,  brand: "NARS",              suitableFor: ["fair","light"] },
+  { id: 21, name: "Exhibit A",          shade: "Blush",              category: "blush",      color: "#E05A40", price: 9500,  brand: "NARS",              suitableFor: ["medium","tan","deep"] },
+  { id: 22, name: "Peaches",            shade: "Powder Blush",       category: "blush",      color: "#F0A060", price: 7800,  brand: "MAC",               suitableFor: ["fair","light"] },
+  { id: 23, name: "Mocha",              shade: "Powder Blush",       category: "blush",      color: "#9B6B5A", price: 7800,  brand: "MAC",               suitableFor: ["tan","deep"] },
+  { id: 24, name: "Fiji",               shade: "Cheeks Out",         category: "blush",      color: "#C47480", price: 6200,  brand: "Fenty Beauty",      suitableFor: ["medium","tan"] },
   // FOUNDATION
-  { id: 25, name: "NC15",               shade: "Studio Fix Fluid",   category: "foundation", color: "#F2D8B8", price: 45, brand: "MAC",               suitableFor: ["fair","light"] },
-  { id: 26, name: "NC30",               shade: "Studio Fix Fluid",   category: "foundation", color: "#C8945A", price: 45, brand: "MAC",               suitableFor: ["medium"] },
-  { id: 27, name: "NC45",               shade: "Studio Fix Fluid",   category: "foundation", color: "#9B6B3A", price: 45, brand: "MAC",               suitableFor: ["tan"] },
-  { id: 28, name: "NC55",               shade: "Studio Fix Fluid",   category: "foundation", color: "#6B3A1A", price: 45, brand: "MAC",               suitableFor: ["deep"] },
-  { id: 29, name: "420W",               shade: "Pro Filt'r",         category: "foundation", color: "#C8A07A", price: 40, brand: "Fenty Beauty",      suitableFor: ["medium"] },
-  { id: 30, name: "490W",               shade: "Pro Filt'r",         category: "foundation", color: "#7A4A2A", price: 40, brand: "Fenty Beauty",      suitableFor: ["deep"] },
+  { id: 25, name: "NC15",               shade: "Studio Fix Fluid",   category: "foundation", color: "#F2D8B8", price: 12600, brand: "MAC",               suitableFor: ["fair","light"] },
+  { id: 26, name: "NC30",               shade: "Studio Fix Fluid",   category: "foundation", color: "#C8945A", price: 12600, brand: "MAC",               suitableFor: ["medium"] },
+  { id: 27, name: "NC45",               shade: "Studio Fix Fluid",   category: "foundation", color: "#9B6B3A", price: 12600, brand: "MAC",               suitableFor: ["tan"] },
+  { id: 28, name: "NC55",               shade: "Studio Fix Fluid",   category: "foundation", color: "#6B3A1A", price: 12600, brand: "MAC",               suitableFor: ["deep"] },
+  { id: 29, name: "420W",               shade: "Pro Filt'r",         category: "foundation", color: "#C8A07A", price: 11200, brand: "Fenty Beauty",      suitableFor: ["medium"] },
+  { id: 30, name: "490W",               shade: "Pro Filt'r",         category: "foundation", color: "#7A4A2A", price: 11200, brand: "Fenty Beauty",      suitableFor: ["deep"] },
 ];
 
 /* ─────────────────────────── Landmark indices ─────────────────────────── */
@@ -773,7 +773,7 @@ export default function TryOn() {
                         )}
                         style={{ backgroundColor: product.color }}
                       />
-                      <span className="text-[11px] font-medium text-[#9E8A7C]">${product.price}</span>
+                      <span className="text-[11px] font-medium text-[#9E8A7C]">Rs. {product.price.toLocaleString()}</span>
                     </div>
                     <p className="font-serif text-sm font-semibold text-[#3A2822] leading-tight">{product.name}</p>
                     <p className="text-[10px] text-[#B5A39A] mt-0.5 uppercase tracking-wide">{product.brand}</p>
