@@ -2,18 +2,17 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Camera, Download, RotateCcw, Info, CameraOff } from "lucide-react";
+import { Loader2, Camera, Upload, RotateCcw, Sparkles, X, Info, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Types
+/* ─────────────────────────── Types ─────────────────────────── */
 type SkinTone = "fair" | "light" | "medium" | "tan" | "deep";
 type Category = "lips" | "eyes" | "blush" | "foundation";
 
 interface Product {
   id: number;
   name: string;
+  shade: string;
   category: Category;
   color: string;
   price: number;
@@ -21,459 +20,779 @@ interface Product {
   suitableFor: SkinTone[];
 }
 
-// Products Catalog
+/* ─────────────────────────── Products ─────────────────────────── */
 const PRODUCTS: Product[] = [
-  { id: 1, name: "Ruby Allure", category: "lips", color: "#C0392B", price: 28, brand: "GlowAR", suitableFor: ["medium", "tan", "deep"] },
-  { id: 2, name: "Petal Kiss", category: "lips", color: "#E8A0A0", price: 24, brand: "GlowAR", suitableFor: ["fair", "light", "medium"] },
-  { id: 3, name: "Berry Crush", category: "lips", color: "#7D2E5C", price: 32, brand: "GlowAR", suitableFor: ["fair", "light", "tan", "deep"] },
-  { id: 4, name: "Nude Glow", category: "lips", color: "#C68B6A", price: 26, brand: "GlowAR", suitableFor: ["light", "medium", "tan"] },
-  { id: 5, name: "Coral Sunset", category: "lips", color: "#E8704A", price: 28, brand: "GlowAR", suitableFor: ["fair", "light", "medium"] },
-  { id: 6, name: "Mahogany", category: "lips", color: "#6B2B2B", price: 30, brand: "GlowAR", suitableFor: ["tan", "deep"] },
-  
-  { id: 7, name: "Smoky Obsidian", category: "eyes", color: "#2C2C2C", price: 35, brand: "GlowAR", suitableFor: ["fair", "light", "medium", "tan", "deep"] },
-  { id: 8, name: "Rose Gold Dream", category: "eyes", color: "#B8846A", price: 38, brand: "GlowAR", suitableFor: ["fair", "light", "medium"] },
-  { id: 9, name: "Emerald Gem", category: "eyes", color: "#2E6B4F", price: 36, brand: "GlowAR", suitableFor: ["fair", "light", "medium", "tan"] },
-  { id: 10, name: "Bronze Goddess", category: "eyes", color: "#8B5A2B", price: 34, brand: "GlowAR", suitableFor: ["medium", "tan", "deep"] },
-  { id: 11, name: "Ocean Blue", category: "eyes", color: "#1A5276", price: 37, brand: "GlowAR", suitableFor: ["fair", "light"] },
-  { id: 12, name: "Amethyst Night", category: "eyes", color: "#6C3483", price: 39, brand: "GlowAR", suitableFor: ["light", "medium", "deep"] },
-  
-  { id: 13, name: "Peach Flush", category: "blush", color: "#F4A460", price: 22, brand: "GlowAR", suitableFor: ["fair", "light"] },
-  { id: 14, name: "Rose Blossom", category: "blush", color: "#C47480", price: 24, brand: "GlowAR", suitableFor: ["fair", "light", "medium"] },
-  { id: 15, name: "Terracotta Warmth", category: "blush", color: "#B05D3D", price: 25, brand: "GlowAR", suitableFor: ["medium", "tan", "deep"] },
-  { id: 16, name: "Berry Cheek", category: "blush", color: "#8B3A5A", price: 23, brand: "GlowAR", suitableFor: ["tan", "deep"] },
-  
-  { id: 17, name: "Porcelain Veil", category: "foundation", color: "#F5E6D3", price: 45, brand: "GlowAR", suitableFor: ["fair"] },
-  { id: 18, name: "Ivory Luminaire", category: "foundation", color: "#EDD5B0", price: 45, brand: "GlowAR", suitableFor: ["light"] },
-  { id: 19, name: "Honey Sand", category: "foundation", color: "#C9956A", price: 45, brand: "GlowAR", suitableFor: ["medium"] },
-  { id: 20, name: "Caramel Glow", category: "foundation", color: "#A0623A", price: 45, brand: "GlowAR", suitableFor: ["tan"] },
-  { id: 21, name: "Espresso Rich", category: "foundation", color: "#5C3317", price: 45, brand: "GlowAR", suitableFor: ["deep"] },
+  // LIPS
+  { id: 1,  name: "Ruby Woo",          shade: "Retro Matte",        category: "lips",       color: "#9B1B1B", price: 22, brand: "MAC",               suitableFor: ["medium","tan","deep"] },
+  { id: 2,  name: "Velvet Teddy",       shade: "Matte",              category: "lips",       color: "#9B7155", price: 22, brand: "MAC",               suitableFor: ["light","medium"] },
+  { id: 3,  name: "Diva",               shade: "Matte",              category: "lips",       color: "#572137", price: 22, brand: "MAC",               suitableFor: ["tan","deep"] },
+  { id: 4,  name: "Pillow Talk",        shade: "Matte Revolution",   category: "lips",       color: "#C07A8C", price: 38, brand: "Charlotte Tilbury", suitableFor: ["fair","light"] },
+  { id: 5,  name: "Walk of No Shame",   shade: "Matte",              category: "lips",       color: "#B83A3A", price: 38, brand: "Charlotte Tilbury", suitableFor: ["medium","tan"] },
+  { id: 6,  name: "Vienna",             shade: "Soft Matte",         category: "lips",       color: "#C4A0A8", price: 10, brand: "NYX",               suitableFor: ["fair","light","medium"] },
+  { id: 7,  name: "Cannes",             shade: "Soft Matte",         category: "lips",       color: "#B22222", price: 10, brand: "NYX",               suitableFor: ["medium","tan","deep"] },
+  { id: 8,  name: "Jungle Red",         shade: "Satin Lip Pencil",   category: "lips",       color: "#C41E3A", price: 36, brand: "NARS",              suitableFor: ["medium","tan","deep"] },
+  { id: 9,  name: "Dragon Girl",        shade: "Powermatte",         category: "lips",       color: "#8B1A3A", price: 36, brand: "NARS",              suitableFor: ["tan","deep"] },
+  { id: 10, name: "Raspberry Red",      shade: "Colour Riche",       category: "lips",       color: "#C0396B", price: 12, brand: "L'Oréal",           suitableFor: ["medium","tan","deep"] },
+  // EYES
+  { id: 11, name: "Half Baked",         shade: "Eyeshadow",          category: "eyes",       color: "#A0693C", price: 24, brand: "Urban Decay",       suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 12, name: "Midnight Cowboy",    shade: "Eyeshadow",          category: "eyes",       color: "#C4966A", price: 24, brand: "Urban Decay",       suitableFor: ["fair","light","medium"] },
+  { id: 13, name: "Club",               shade: "Eyeshadow",          category: "eyes",       color: "#4A3728", price: 22, brand: "MAC",               suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 14, name: "Woodwinked",         shade: "Eyeshadow",          category: "eyes",       color: "#B8733C", price: 22, brand: "MAC",               suitableFor: ["medium","tan","deep"] },
+  { id: 15, name: "Night Rider",        shade: "Eyeshadow",          category: "eyes",       color: "#1C1826", price: 36, brand: "NARS",              suitableFor: ["fair","light","medium","tan","deep"] },
+  { id: 16, name: "Canyon (Soft Glam)", shade: "Palette",            category: "eyes",       color: "#C4905A", price: 45, brand: "Anastasia BH",      suitableFor: ["medium","tan","deep"] },
+  { id: 17, name: "Pillow Talk Rose",   shade: "Luxury Palette",     category: "eyes",       color: "#C4A0A0", price: 68, brand: "Charlotte Tilbury", suitableFor: ["fair","light"] },
+  { id: 18, name: "Obsidian Smoky",     shade: "Eyeshadow Palette",  category: "eyes",       color: "#2C1F38", price: 58, brand: "Huda Beauty",       suitableFor: ["fair","light","medium","tan","deep"] },
+  // BLUSH
+  { id: 19, name: "Orgasm",             shade: "Blush",              category: "blush",      color: "#E8906A", price: 34, brand: "NARS",              suitableFor: ["fair","light","medium"] },
+  { id: 20, name: "Deep Throat",        shade: "Blush",              category: "blush",      color: "#F0B0C0", price: 34, brand: "NARS",              suitableFor: ["fair","light"] },
+  { id: 21, name: "Exhibit A",          shade: "Blush",              category: "blush",      color: "#E05A40", price: 34, brand: "NARS",              suitableFor: ["medium","tan","deep"] },
+  { id: 22, name: "Peaches",            shade: "Powder Blush",       category: "blush",      color: "#F0A060", price: 28, brand: "MAC",               suitableFor: ["fair","light"] },
+  { id: 23, name: "Mocha",              shade: "Powder Blush",       category: "blush",      color: "#9B6B5A", price: 28, brand: "MAC",               suitableFor: ["tan","deep"] },
+  { id: 24, name: "Fiji",               shade: "Cheeks Out",         category: "blush",      color: "#C47480", price: 22, brand: "Fenty Beauty",      suitableFor: ["medium","tan"] },
+  // FOUNDATION
+  { id: 25, name: "NC15",               shade: "Studio Fix Fluid",   category: "foundation", color: "#F2D8B8", price: 45, brand: "MAC",               suitableFor: ["fair","light"] },
+  { id: 26, name: "NC30",               shade: "Studio Fix Fluid",   category: "foundation", color: "#C8945A", price: 45, brand: "MAC",               suitableFor: ["medium"] },
+  { id: 27, name: "NC45",               shade: "Studio Fix Fluid",   category: "foundation", color: "#9B6B3A", price: 45, brand: "MAC",               suitableFor: ["tan"] },
+  { id: 28, name: "NC55",               shade: "Studio Fix Fluid",   category: "foundation", color: "#6B3A1A", price: 45, brand: "MAC",               suitableFor: ["deep"] },
+  { id: 29, name: "420W",               shade: "Pro Filt'r",         category: "foundation", color: "#C8A07A", price: 40, brand: "Fenty Beauty",      suitableFor: ["medium"] },
+  { id: 30, name: "490W",               shade: "Pro Filt'r",         category: "foundation", color: "#7A4A2A", price: 40, brand: "Fenty Beauty",      suitableFor: ["deep"] },
 ];
 
-// Drawing Functions
-function drawPath(ctx: CanvasRenderingContext2D, landmarks: any[], indices: number[], color: string, opacity: number, width: number, height: number, fill = true) {
-  if (!landmarks || indices.length === 0) return;
-  ctx.save();
-  ctx.globalAlpha = opacity;
-  ctx.fillStyle = color;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 1;
+/* ─────────────────────────── Landmark indices ─────────────────────────── */
+const LIPS_OUTER = [61,185,40,39,37,0,267,269,270,409,291,375,321,405,314,17,84,181,91,146];
+const LIPS_INNER = [78,191,80,81,82,13,312,311,310,415,308,324,318,402,317,14,87,178,88,95];
+
+// Eye socket (lid area from brow lower edge down to upper lashline) for eyeshadow
+const LEFT_EYE_SOCKET  = [46,53,52,65,55,107,66,105,63,70,156,35,31,228,229,230,231,232,233,244,245,128,121,120,119,118,117,116,123,50,101,100,126,142,36,205,206,207,187,147,93,132,58,172,136,150,149,176,148,152,377,400,378,379,365,397,288,361,323,454,356,389,251,284,332,297,338,10,109,67,103,54,21,162,127,234,93,132,58,172,136,150,149,176,148,152,377,400,378,379];
+
+// Simplified eye socket for eyeshadow
+const LEFT_LID  = [33,246,161,160,159,158,157,173,133,155,154,153,145,144,163,7];
+const RIGHT_LID = [362,398,384,385,386,387,388,466,263,249,390,373,374,380,381,382];
+
+// Eyebrow lower edges (to extend shadow upward)
+const LEFT_BROW_LOWER  = [46,53,52,65,55,70,63,105,66,107];
+const RIGHT_BROW_LOWER = [276,283,282,295,285,300,293,334,296,336];
+
+// Cheek landmark anchors
+const LEFT_CHEEK_ANCHOR  = 50;
+const RIGHT_CHEEK_ANCHOR = 280;
+
+// Face oval for foundation
+const FACE_OVAL = [10,338,297,332,284,251,389,356,454,323,361,288,397,365,379,378,400,377,152,148,176,149,150,136,172,58,132,93,234,127,162,21,54,103,67,109];
+
+/* ─────────────────────────── Helpers ─────────────────────────── */
+function hexToRgb(hex: string) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return { r, g, b };
+}
+
+function buildPath(ctx: CanvasRenderingContext2D, lms: any[], indices: number[], w: number, h: number) {
   ctx.beginPath();
   indices.forEach((i, idx) => {
-    const pt = landmarks[i];
-    const x = (1 - pt.x) * width; // Flipped X
-    const y = pt.y * height;
+    const pt = lms[i];
+    const x = pt.x * w;
+    const y = pt.y * h;
     if (idx === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
   ctx.closePath();
-  if (fill) ctx.fill();
-  else ctx.stroke();
-  ctx.restore();
 }
 
-function drawBlush(ctx: CanvasRenderingContext2D, cx: number, cy: number, color: string, opacity: number) {
-  const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, 40);
-  const colorRgba = color.startsWith('#') 
-    ? `rgba(${parseInt(color.slice(1,3),16)},${parseInt(color.slice(3,5),16)},${parseInt(color.slice(5,7),16)},${opacity})`
-    : color;
-  gradient.addColorStop(0, colorRgba);
-  gradient.addColorStop(1, 'transparent');
-  
+function applyLips(
+  ctx: CanvasRenderingContext2D,
+  lms: any[],
+  color: string,
+  opacity: number,
+  w: number,
+  h: number
+) {
+  const { r, g, b } = hexToRgb(color);
+  const tmp = document.createElement("canvas");
+  tmp.width = w; tmp.height = h;
+  const tCtx = tmp.getContext("2d")!;
+
+  // Outer lip fill
+  buildPath(tCtx, lms, LIPS_OUTER, w, h);
+  tCtx.fillStyle = color;
+  tCtx.fill();
+
+  // Hollow out inner lips to not fill mouth opening
+  tCtx.globalCompositeOperation = "destination-out";
+  buildPath(tCtx, lms, LIPS_INNER, w, h);
+  tCtx.fill();
+  tCtx.globalCompositeOperation = "source-over";
+
+  // Soft edge
   ctx.save();
-  ctx.globalAlpha = opacity;
-  ctx.fillStyle = gradient;
-  ctx.beginPath();
-  ctx.ellipse(cx, cy, 50, 35, 0, 0, Math.PI * 2);
+  ctx.filter = "blur(1.2px)";
+  ctx.globalAlpha = opacity * 0.9;
+  ctx.globalCompositeOperation = "multiply";
+  ctx.drawImage(tmp, 0, 0);
+  ctx.filter = "none";
+
+  // Gloss highlight on lower lip center
+  const lowerCenter = lms[17];
+  const glossX = lowerCenter.x * w;
+  const glossY = lowerCenter.y * h;
+  const glossGrad = ctx.createRadialGradient(glossX, glossY - 3, 0, glossX, glossY - 3, 20);
+  glossGrad.addColorStop(0, `rgba(255,255,255,0.35)`);
+  glossGrad.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.globalCompositeOperation = "screen";
+  ctx.globalAlpha = opacity * 0.5;
+  ctx.fillStyle = glossGrad;
+  buildPath(ctx, lms, LIPS_OUTER, w, h);
   ctx.fill();
   ctx.restore();
 }
 
-function drawFoundation(ctx: CanvasRenderingContext2D, landmarks: any[], width: number, height: number, color: string, opacity: number) {
-  // A simplified face outline for foundation
-  const faceOval = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
-  drawPath(ctx, landmarks, faceOval, color, opacity * 0.4, width, height, true);
+function applyEyeshadow(
+  ctx: CanvasRenderingContext2D,
+  lms: any[],
+  color: string,
+  opacity: number,
+  w: number,
+  h: number
+) {
+  const { r, g, b } = hexToRgb(color);
+
+  [
+    { lid: LEFT_LID,  brow: LEFT_BROW_LOWER },
+    { lid: RIGHT_LID, brow: RIGHT_BROW_LOWER },
+  ].forEach(({ lid, brow }) => {
+    const tmp = document.createElement("canvas");
+    tmp.width = w; tmp.height = h;
+    const tCtx = tmp.getContext("2d")!;
+
+    // Compute bounding box to create gradient
+    const allIdx = [...lid, ...brow];
+    const xs = allIdx.map(i => lms[i].x * w);
+    const ys = allIdx.map(i => lms[i].y * h);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const minY = Math.min(...ys), maxY = Math.max(...ys);
+    const midX = (minX + maxX) / 2;
+
+    // Gradient: dense at lash line, fades toward brow
+    const grad = tCtx.createLinearGradient(midX, maxY, midX, minY);
+    grad.addColorStop(0, `rgba(${r},${g},${b},0.85)`);
+    grad.addColorStop(0.5, `rgba(${r},${g},${b},0.45)`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+
+    // Draw the eye socket region (lid + brow outline)
+    tCtx.beginPath();
+    brow.forEach((i, idx) => {
+      const pt = lms[i];
+      if (idx === 0) tCtx.moveTo(pt.x * w, pt.y * h);
+      else tCtx.lineTo(pt.x * w, pt.y * h);
+    });
+    lid.slice().reverse().forEach(i => {
+      const pt = lms[i];
+      tCtx.lineTo(pt.x * w, pt.y * h);
+    });
+    tCtx.closePath();
+    tCtx.fillStyle = grad;
+    tCtx.fill();
+
+    ctx.save();
+    ctx.filter = "blur(2.5px)";
+    ctx.globalAlpha = opacity * 0.75;
+    ctx.globalCompositeOperation = "multiply";
+    ctx.drawImage(tmp, 0, 0);
+    ctx.filter = "none";
+    ctx.restore();
+  });
 }
 
-function detectSkinTone(videoEl: HTMLVideoElement, landmarks: any[]): SkinTone {
-  const canvas = document.createElement('canvas');
-  canvas.width = videoEl.videoWidth;
-  canvas.height = videoEl.videoHeight;
-  const ctx = canvas.getContext('2d')!;
-  ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-  
-  const forehead = landmarks[10];
-  const x = Math.floor((1 - forehead.x) * canvas.width);
-  const y = Math.floor(forehead.y * canvas.height);
-  
-  try {
-    const pixel = ctx.getImageData(x, y, 1, 1).data;
-    const [r, g, b] = [pixel[0], pixel[1], pixel[2]];
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
-    
-    if (luminance > 200) return 'fair';
-    if (luminance > 160) return 'light';
-    if (luminance > 120) return 'medium';
-    if (luminance > 80) return 'tan';
-    return 'deep';
-  } catch (e) {
-    return 'medium'; // fallback
-  }
+function applyBlush(
+  ctx: CanvasRenderingContext2D,
+  lms: any[],
+  color: string,
+  opacity: number,
+  w: number,
+  h: number
+) {
+  const { r, g, b } = hexToRgb(color);
+
+  [LEFT_CHEEK_ANCHOR, RIGHT_CHEEK_ANCHOR].forEach((anchor, side) => {
+    const pt = lms[anchor];
+    const cx = pt.x * w;
+    const cy = pt.y * h;
+    const rx = w * 0.085;
+    const ry = h * 0.055;
+    const angle = side === 0 ? -0.2 : 0.2;
+
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rx);
+    grad.addColorStop(0, `rgba(${r},${g},${b},0.70)`);
+    grad.addColorStop(0.5, `rgba(${r},${g},${b},0.30)`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+
+    ctx.save();
+    ctx.filter = "blur(3px)";
+    ctx.globalAlpha = opacity * 0.65;
+    ctx.globalCompositeOperation = "multiply";
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    ctx.scale(1, ry / rx);
+    ctx.translate(-cx, -cy);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rx, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.filter = "none";
+    ctx.restore();
+  });
 }
+
+function applyFoundation(
+  ctx: CanvasRenderingContext2D,
+  lms: any[],
+  color: string,
+  opacity: number,
+  w: number,
+  h: number
+) {
+  const { r, g, b } = hexToRgb(color);
+  const tmp = document.createElement("canvas");
+  tmp.width = w; tmp.height = h;
+  const tCtx = tmp.getContext("2d")!;
+  buildPath(tCtx, lms, FACE_OVAL, w, h);
+  tCtx.fillStyle = `rgba(${r},${g},${b},1)`;
+  tCtx.fill();
+
+  ctx.save();
+  ctx.filter = "blur(4px)";
+  ctx.globalAlpha = opacity * 0.28;
+  ctx.globalCompositeOperation = "multiply";
+  ctx.drawImage(tmp, 0, 0);
+  ctx.filter = "none";
+  ctx.restore();
+}
+
+function detectSkinTone(canvas: HTMLCanvasElement, lms: any[]): SkinTone {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return "medium";
+  const w = canvas.width, h = canvas.height;
+  // Sample from forehead (lm 10), left cheek (50), right cheek (280)
+  const pts = [lms[10], lms[50], lms[280]];
+  let lum = 0;
+  let valid = 0;
+  for (const pt of pts) {
+    try {
+      const px = ctx.getImageData(Math.floor(pt.x * w), Math.floor(pt.y * h), 1, 1).data;
+      lum += 0.299 * px[0] + 0.587 * px[1] + 0.114 * px[2];
+      valid++;
+    } catch {}
+  }
+  lum = valid > 0 ? lum / valid : 120;
+  if (lum > 200) return "fair";
+  if (lum > 165) return "light";
+  if (lum > 125) return "medium";
+  if (lum > 80)  return "tan";
+  return "deep";
+}
+
+/* ─────────────────────────── Component ─────────────────────────── */
+type Mode = "upload" | "camera" | "processing" | "result";
 
 export default function TryOn() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isModelLoading, setIsModelLoading] = useState(true);
-  const [cameraError, setCameraError] = useState(false);
-  const [faceDetected, setFaceDetected] = useState(false);
+  const [mode, setMode] = useState<Mode>("upload");
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [landmarks, setLandmarks] = useState<any[] | null>(null);
   const [skinTone, setSkinTone] = useState<SkinTone | null>(null);
-  
-  const [intensity, setIntensity] = useState(0.6);
+  const [modelReady, setModelReady] = useState(false);
+  const [modelError, setModelError] = useState<string | null>(null);
+  const [intensity, setIntensity] = useState(0.65);
+  const [activeCategory, setActiveCategory] = useState<Category>("lips");
   const [selectedProducts, setSelectedProducts] = useState<Record<Category, Product | null>>({
-    lips: null,
-    eyes: null,
-    blush: null,
-    foundation: null
+    lips: null, eyes: null, blush: null, foundation: null,
   });
+  const [dragging, setDragging] = useState(false);
+  const [processingError, setProcessingError] = useState<string | null>(null);
 
   const faceLandmarkerRef = useRef<FaceLandmarker | null>(null);
-  const reqFrameRef = useRef<number>();
-  const lastSkinToneCheck = useRef<number>(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const resultCanvasRef = useRef<HTMLCanvasElement>(null);
+  const photoImgRef = useRef<HTMLImageElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Load MediaPipe model eagerly
   useEffect(() => {
-    async function setupCameraAndModel() {
+    let cancelled = false;
+    (async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { width: 1280, height: 720, facingMode: 'user' } 
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (err) {
-        setCameraError(true);
-        setIsModelLoading(false);
-        return;
-      }
-
-      try {
-        const filesetResolver = await FilesetResolver.forVisionTasks(
+        const fs = await FilesetResolver.forVisionTasks(
           "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
         );
-        faceLandmarkerRef.current = await FaceLandmarker.createFromOptions(filesetResolver, {
+        const fl = await FaceLandmarker.createFromOptions(fs, {
           baseOptions: {
-            modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
-            delegate: "GPU"
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+            delegate: "GPU",
           },
-          runningMode: "VIDEO",
-          numFaces: 1
+          runningMode: "IMAGE",
+          numFaces: 1,
         });
-        setIsModelLoading(false);
-      } catch (err) {
-        console.error("Model load error", err);
+        if (!cancelled) { faceLandmarkerRef.current = fl; setModelReady(true); }
+      } catch {
+        if (!cancelled) setModelError("Could not load AI model. Please refresh and try again.");
       }
-    }
-
-    setupCameraAndModel();
-
-    return () => {
-      if (videoRef.current?.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(t => t.stop());
-      }
-      if (reqFrameRef.current) cancelAnimationFrame(reqFrameRef.current);
-    };
+    })();
+    return () => { cancelled = true; };
   }, []);
 
-  const drawMakeup = useCallback((landmarks: any[]) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const { width, height } = canvas;
-    ctx.clearRect(0, 0, width, height);
-
-    if (selectedProducts.foundation) {
-      drawFoundation(ctx, landmarks, width, height, selectedProducts.foundation.color, intensity);
-    }
-
-    if (selectedProducts.blush) {
-      // Left cheek approx (flipped)
-      const leftCheek = landmarks[323];
-      // Right cheek approx (flipped)
-      const rightCheek = landmarks[93];
-      drawBlush(ctx, (1 - leftCheek.x) * width, leftCheek.y * height, selectedProducts.blush.color, intensity);
-      drawBlush(ctx, (1 - rightCheek.x) * width, rightCheek.y * height, selectedProducts.blush.color, intensity);
-    }
-
-    if (selectedProducts.lips) {
-      const lipsOuter = [61,185,40,39,37,0,267,269,270,409,291,375,321,405,314,17,84,181,91,146];
-      drawPath(ctx, landmarks, lipsOuter, selectedProducts.lips.color, intensity, width, height, true);
-    }
-
-    if (selectedProducts.eyes) {
-      const leftEye = [33,7,163,144,145,153,154,155,133,173,157,158,159,160,161,246];
-      const rightEye = [362,382,381,380,374,373,390,249,263,466,388,387,386,385,384,398];
-      drawPath(ctx, landmarks, leftEye, selectedProducts.eyes.color, intensity * 0.7, width, height, true);
-      drawPath(ctx, landmarks, rightEye, selectedProducts.eyes.color, intensity * 0.7, width, height, true);
-    }
-  }, [selectedProducts, intensity]);
-
-  const predictLoop = useCallback(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    
-    if (video && canvas && video.readyState >= 2 && faceLandmarkerRef.current) {
-      if (canvas.width !== video.videoWidth) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-      }
-
-      const results = faceLandmarkerRef.current.detectForVideo(video, performance.now());
-      
-      if (results.faceLandmarks && results.faceLandmarks.length > 0) {
-        setFaceDetected(true);
-        const landmarks = results.faceLandmarks[0];
-        
-        drawMakeup(landmarks);
-
-        const now = Date.now();
-        if (!skinTone || now - lastSkinToneCheck.current > 2000) {
-          lastSkinToneCheck.current = now;
-          setSkinTone(detectSkinTone(video, landmarks));
-        }
-      } else {
-        setFaceDetected(false);
-        const ctx = canvas.getContext('2d');
-        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-    reqFrameRef.current = requestAnimationFrame(predictLoop);
-  }, [drawMakeup, skinTone]);
-
+  // Stop camera stream on unmount or mode change away from camera
   useEffect(() => {
-    if (!isModelLoading && !cameraError) {
-      reqFrameRef.current = requestAnimationFrame(predictLoop);
-    }
-    return () => {
-      if (reqFrameRef.current) cancelAnimationFrame(reqFrameRef.current);
-    };
-  }, [isModelLoading, cameraError, predictLoop]);
+    if (mode !== "camera") stopCamera();
+  }, [mode]);
 
-  const handleCapture = () => {
-    if (!videoRef.current || !canvasRef.current) return;
-    const exportCanvas = document.createElement('canvas');
-    exportCanvas.width = videoRef.current.videoWidth;
-    exportCanvas.height = videoRef.current.videoHeight;
-    const ctx = exportCanvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Draw flipped video
-    ctx.save();
-    ctx.scale(-1, 1);
-    ctx.translate(-exportCanvas.width, 0);
-    ctx.drawImage(videoRef.current, 0, 0);
-    ctx.restore();
-    
-    // Draw canvas overlay
-    ctx.drawImage(canvasRef.current, 0, 0);
-
-    const link = document.createElement('a');
-    link.download = 'glow-ar-look.png';
-    link.href = exportCanvas.toDataURL('image/png');
-    link.click();
+  const stopCamera = () => {
+    streamRef.current?.getTracks().forEach(t => t.stop());
+    streamRef.current = null;
   };
 
-  const activeCategory = Object.values(selectedProducts).find(p => p !== null)?.category || 'lips';
+  const startCamera = async () => {
+    setMode("camera");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+      });
+      streamRef.current = stream;
+      if (videoRef.current) { videoRef.current.srcObject = stream; }
+    } catch {
+      setMode("upload");
+      alert("Could not access camera. Please allow camera permission and try again.");
+    }
+  };
 
-  const getRecommendations = (cat: Category) => {
+  const captureFromCamera = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const tmp = document.createElement("canvas");
+    tmp.width = video.videoWidth;
+    tmp.height = video.videoHeight;
+    const ctx = tmp.getContext("2d")!;
+    // Don't flip — capture raw frame, MediaPipe will detect correctly
+    ctx.drawImage(video, 0, 0);
+    stopCamera();
+    processImageCanvas(tmp);
+  };
+
+  const processFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const url = e.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        const tmp = document.createElement("canvas");
+        tmp.width = img.naturalWidth;
+        tmp.height = img.naturalHeight;
+        tmp.getContext("2d")!.drawImage(img, 0, 0);
+        processImageCanvas(tmp, url);
+      };
+      img.src = url;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const processImageCanvas = (srcCanvas: HTMLCanvasElement, existingUrl?: string) => {
+    setMode("processing");
+    setProcessingError(null);
+    const url = existingUrl ?? srcCanvas.toDataURL("image/jpeg", 0.92);
+    setPhotoUrl(url);
+
+    if (!faceLandmarkerRef.current) {
+      setProcessingError("AI model is still loading. Please wait a moment and try again.");
+      setMode("upload");
+      return;
+    }
+
+    // Run detection on the canvas element directly
+    try {
+      const results = faceLandmarkerRef.current.detect(srcCanvas);
+      if (results.faceLandmarks && results.faceLandmarks.length > 0) {
+        const lms = results.faceLandmarks[0];
+        setLandmarks(lms);
+        setSkinTone(detectSkinTone(srcCanvas, lms));
+        photoImgRef.current = null;
+        // Store the source canvas dimensions for later re-renders
+        const img = new Image();
+        img.onload = () => { photoImgRef.current = img; setMode("result"); };
+        img.src = url;
+      } else {
+        setProcessingError("No face detected. Please use a clear front-facing photo.");
+        setMode("upload");
+      }
+    } catch (err) {
+      setProcessingError("Something went wrong. Please try a different photo.");
+      setMode("upload");
+    }
+  };
+
+  // Re-render makeup whenever products, intensity, or landmarks change
+  useEffect(() => {
+    if (mode !== "result" || !landmarks || !photoImgRef.current || !resultCanvasRef.current) return;
+
+    const canvas = resultCanvasRef.current;
+    const img = photoImgRef.current;
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d")!;
+    const w = canvas.width, h = canvas.height;
+
+    // Draw base photo
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0);
+
+    // Apply makeup layers in order (foundation first, lips last for coverage)
+    if (selectedProducts.foundation) applyFoundation(ctx, landmarks, selectedProducts.foundation.color, intensity, w, h);
+    if (selectedProducts.blush)      applyBlush(ctx, landmarks, selectedProducts.blush.color, intensity, w, h);
+    if (selectedProducts.eyes)       applyEyeshadow(ctx, landmarks, selectedProducts.eyes.color, intensity, w, h);
+    if (selectedProducts.lips)       applyLips(ctx, landmarks, selectedProducts.lips.color, intensity, w, h);
+  }, [mode, landmarks, selectedProducts, intensity]);
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  };
+
+  const handleReset = () => {
+    setMode("upload");
+    setPhotoUrl(null);
+    setLandmarks(null);
+    setSkinTone(null);
+    setSelectedProducts({ lips: null, eyes: null, blush: null, foundation: null });
+    setProcessingError(null);
+    photoImgRef.current = null;
+  };
+
+  const handleDownload = () => {
+    const canvas = resultCanvasRef.current;
+    if (!canvas) return;
+    const a = document.createElement("a");
+    a.download = "glowar-look.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  };
+
+  const toggleProduct = (product: Product) => {
+    setSelectedProducts(prev => ({
+      ...prev,
+      [product.category]: prev[product.category]?.id === product.id ? null : product,
+    }));
+  };
+
+  const getRecommendations = (cat: Category): Product[] => {
     if (!skinTone) return [];
     return PRODUCTS.filter(p => p.category === cat && p.suitableFor.includes(skinTone)).slice(0, 3);
   };
 
+  const categoryProducts = PRODUCTS.filter(p => p.category === activeCategory);
+  const selected = selectedProducts[activeCategory];
+  const needsRec = selected && skinTone && !selected.suitableFor.includes(skinTone);
+  const recs = needsRec ? getRecommendations(activeCategory) : [];
+
+  const SKIN_TONE_LABELS: Record<SkinTone, string> = {
+    fair: "Fair", light: "Light", medium: "Medium", tan: "Tan", deep: "Deep",
+  };
+  const SKIN_TONE_COLORS: Record<SkinTone, string> = {
+    fair: "#F5E0C8", light: "#E8C9A0", medium: "#C8956A", tan: "#A0623A", deep: "#5C3317",
+  };
+
+  const CATEGORIES: Category[] = ["lips", "eyes", "blush", "foundation"];
+
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAF6F2] flex flex-col font-sans">
       {/* Header */}
-      <header className="h-16 border-b flex items-center justify-between px-6 bg-card sticky top-0 z-10">
-        <h1 className="text-2xl font-serif font-semibold text-primary tracking-wide">GlowAR</h1>
-        <div className="flex gap-4">
-          <Button variant="outline" size="sm" onClick={() => setSelectedProducts({ lips: null, eyes: null, blush: null, foundation: null })}>
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Reset
-          </Button>
-          <Button size="sm" onClick={handleCapture}>
-            <Download className="w-4 h-4 mr-2" />
-            Capture Look
-          </Button>
-        </div>
+      <header className="h-14 px-6 flex items-center justify-between bg-white border-b border-[#EDE6DF] sticky top-0 z-20">
+        <span className="text-xl font-serif font-semibold text-[#7B1C2E]">GlowAR</span>
+        <span className="text-sm text-[#9E8A7C] font-medium tracking-wide hidden sm:block">AI Virtual Try-On</span>
+        {mode === "result" && (
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleReset}
+              className="border-[#EDE6DF] text-[#7B1C2E] hover:bg-[#F7EFEA] h-8 text-xs gap-1.5">
+              <RotateCcw className="w-3 h-3" /> New Photo
+            </Button>
+            <Button size="sm" onClick={handleDownload}
+              className="bg-[#7B1C2E] hover:bg-[#631525] text-white h-8 text-xs gap-1.5">
+              <Upload className="w-3 h-3 rotate-180" /> Save Look
+            </Button>
+          </div>
+        )}
       </header>
 
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        {/* Camera Section */}
-        <section className="flex-1 relative bg-black min-h-[50vh] lg:min-h-0 flex items-center justify-center overflow-hidden">
-          {cameraError ? (
-            <div className="text-white text-center p-6">
-              <CameraOff className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <h2 className="text-xl font-serif">Camera Access Required</h2>
-              <p className="text-sm opacity-70 mt-2">Please allow camera access to try on makeup.</p>
-            </div>
-          ) : (
-            <div className="relative w-full h-full max-w-[800px] aspect-video flex items-center justify-center">
-              <video 
-                ref={videoRef}
-                autoPlay 
-                playsInline 
-                muted
+        {/* ── LEFT: Photo zone ── */}
+        <section className="flex-1 flex flex-col p-5 min-h-[55vh] lg:min-h-0">
+          {/* Upload zone */}
+          {(mode === "upload" || mode === "processing") && (
+            <div className="flex-1 flex flex-col">
+              <div
+                onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={handleDrop}
                 className={cn(
-                  "absolute inset-0 w-full h-full object-cover transition-opacity duration-500 scale-x-[-1]",
-                  isModelLoading ? "opacity-0" : "opacity-100"
+                  "flex-1 rounded-2xl border-2 border-dashed transition-all duration-200 flex flex-col items-center justify-center text-center gap-4 p-8 cursor-pointer select-none min-h-[380px]",
+                  dragging ? "border-[#7B1C2E] bg-[#F7EFEA]" : "border-[#D9CEC8] bg-white hover:border-[#C4A99E] hover:bg-[#FDFBF9]"
                 )}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {mode === "processing" ? (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-[#F7EFEA] flex items-center justify-center">
+                      <Loader2 className="w-7 h-7 text-[#7B1C2E] animate-spin" />
+                    </div>
+                    <div>
+                      <p className="font-serif text-lg text-[#3A2822]">Analysing your photo...</p>
+                      <p className="text-sm text-[#9E8A7C] mt-1">Detecting facial features</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-[#F7EFEA] flex items-center justify-center">
+                      <ImagePlus className="w-7 h-7 text-[#7B1C2E]" />
+                    </div>
+                    <div>
+                      <p className="font-serif text-xl text-[#3A2822] font-semibold">Add your photo</p>
+                      <p className="text-sm text-[#9E8A7C] mt-1.5">Use a clear front-facing photo for best results</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <Button
+                        className="bg-[#7B1C2E] hover:bg-[#631525] text-white gap-2"
+                        onClick={e => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                        data-testid="button-upload-photo"
+                      >
+                        <Upload className="w-4 h-4" /> Upload Photo
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="border-[#D9CEC8] text-[#3A2822] hover:bg-[#F7EFEA] gap-2"
+                        onClick={e => { e.stopPropagation(); startCamera(); }}
+                        data-testid="button-use-camera"
+                      >
+                        <Camera className="w-4 h-4" /> Use Camera
+                      </Button>
+                    </div>
+                    <p className="text-xs text-[#B5A39A]">or drag & drop an image here</p>
+                    {processingError && (
+                      <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-lg px-4 py-3 text-sm text-red-700 max-w-sm">
+                        <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                        {processingError}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={e => { const f = e.target.files?.[0]; if (f) processFile(f); e.target.value = ""; }}
               />
-              <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
-              />
-              
-              {isModelLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black text-white z-20">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-                  <p className="text-sm font-medium tracking-wide">Loading AI Models...</p>
+
+              {/* Try On button (below upload zone) */}
+              {mode === "upload" && !modelReady && (
+                <div className="mt-4 flex items-center gap-2 text-sm text-[#9E8A7C]">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Loading AI model...
                 </div>
               )}
-
-              {!isModelLoading && !faceDetected && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                  <div className="w-64 h-80 border-2 border-white/30 border-dashed rounded-full animate-pulse flex items-center justify-center">
-                    <span className="text-white/50 text-sm font-medium px-4 py-2 bg-black/40 rounded-full backdrop-blur-md">
-                      Position face here
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {!isModelLoading && faceDetected && (
-                <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-medium">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  Face Detected
-                  {skinTone && (
-                    <>
-                      <span className="opacity-50 mx-1">|</span>
-                      <span className="capitalize text-primary-foreground">{skinTone} Tone</span>
-                    </>
-                  )}
-                </div>
+              {modelError && (
+                <p className="mt-3 text-sm text-red-600">{modelError}</p>
               )}
             </div>
           )}
+
+          {/* Camera preview */}
+          {mode === "camera" && (
+            <div className="flex-1 flex flex-col gap-4">
+              <div className="flex-1 rounded-2xl overflow-hidden bg-black relative min-h-[380px]">
+                <video
+                  ref={videoRef}
+                  autoPlay playsInline muted
+                  className="w-full h-full object-cover scale-x-[-1]"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-52 h-64 border-2 border-white/30 border-dashed rounded-full" />
+                </div>
+              </div>
+              <div className="flex gap-3 justify-center">
+                <Button
+                  className="bg-[#7B1C2E] hover:bg-[#631525] text-white gap-2 px-8"
+                  onClick={captureFromCamera}
+                  data-testid="button-capture"
+                >
+                  <Camera className="w-4 h-4" /> Capture
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-[#D9CEC8] text-[#3A2822] hover:bg-[#F7EFEA] gap-2"
+                  onClick={() => { stopCamera(); setMode("upload"); }}
+                >
+                  <X className="w-4 h-4" /> Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Result canvas */}
+          {mode === "result" && (
+            <div className="flex-1 flex flex-col gap-4">
+              {skinTone && (
+                <div className="flex items-center gap-2 text-xs text-[#9E8A7C]">
+                  <div className="w-3.5 h-3.5 rounded-full border border-white/60 shadow-sm" style={{ backgroundColor: SKIN_TONE_COLORS[skinTone] }} />
+                  Skin tone detected: <span className="font-semibold text-[#3A2822]">{SKIN_TONE_LABELS[skinTone]}</span>
+                </div>
+              )}
+              <div className="flex-1 rounded-2xl overflow-hidden bg-black relative min-h-[380px] flex items-center justify-center">
+                <canvas
+                  ref={resultCanvasRef}
+                  className="max-w-full max-h-full object-contain"
+                  style={{ imageRendering: "auto" }}
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-xs text-[#9E8A7C] font-medium uppercase tracking-wider w-20 flex-shrink-0">Intensity</span>
+                <div className="flex-1">
+                  <input
+                    type="range"
+                    min={0.2}
+                    max={1}
+                    step={0.05}
+                    value={intensity}
+                    onChange={e => setIntensity(Number(e.target.value))}
+                    className="w-full accent-[#7B1C2E] cursor-pointer"
+                    data-testid="slider-intensity"
+                  />
+                </div>
+                <span className="text-xs text-[#3A2822] font-medium w-9 text-right">{Math.round(intensity * 100)}%</span>
+              </div>
+            </div>
+          )}
+
+          {/* Try On with AI button — visible in result mode at bottom */}
+          {mode === "result" && (
+            <Button
+              className="mt-4 w-full bg-[#7B1C2E] hover:bg-[#631525] text-white gap-2 h-12 text-sm font-medium"
+              onClick={handleDownload}
+              data-testid="button-try-on"
+            >
+              <Sparkles className="w-4 h-4" /> Save My Look
+            </Button>
+          )}
+          {mode === "upload" && (
+            <Button
+              className="mt-4 w-full bg-[#7B1C2E] hover:bg-[#631525] text-white gap-2 h-12 text-sm font-medium disabled:opacity-50"
+              disabled
+              data-testid="button-try-on-disabled"
+            >
+              <Sparkles className="w-4 h-4" /> Try On with AI
+            </Button>
+          )}
         </section>
 
-        {/* Product Panel */}
-        <section className="w-full lg:w-[400px] bg-card border-l flex flex-col shadow-[-4px_0_24px_rgba(0,0,0,0.02)]">
-          <div className="p-6 pb-0 flex-shrink-0">
-            <h2 className="text-xl font-serif mb-6">Virtual Try-On</h2>
-            
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Intensity</label>
-                <span className="text-sm font-medium">{Math.round(intensity * 100)}%</span>
-              </div>
-              <Slider 
-                value={[intensity]} 
-                onValueChange={(v) => setIntensity(v[0])} 
-                max={1} 
-                step={0.05}
-                className="w-full"
-              />
+        {/* ── RIGHT: Product panel ── */}
+        <aside className="w-full lg:w-[340px] xl:w-[380px] bg-white border-t lg:border-t-0 lg:border-l border-[#EDE6DF] flex flex-col">
+          <div className="px-5 pt-5 pb-0 flex-shrink-0">
+            <h2 className="font-serif text-lg font-semibold text-[#3A2822] mb-4">Collection</h2>
+
+            {/* Category tabs */}
+            <div className="flex gap-1 mb-0">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  data-testid={`tab-${cat}`}
+                  className={cn(
+                    "flex-1 py-2 text-xs font-semibold rounded-lg capitalize transition-all duration-150",
+                    activeCategory === cat
+                      ? "bg-[#7B1C2E] text-white shadow-sm"
+                      : "text-[#9E8A7C] hover:bg-[#F7EFEA] hover:text-[#3A2822]"
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
 
-          <Tabs defaultValue="lips" className="flex-1 flex flex-col min-h-0">
-            <div className="px-6 border-b">
-              <TabsList className="w-full bg-transparent p-0 justify-start space-x-6 border-none h-auto rounded-none">
-                {["lips", "eyes", "blush", "foundation"].map(cat => (
-                  <TabsTrigger 
-                    key={cat} 
-                    value={cat}
-                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-0 py-3 capitalize text-sm font-medium text-muted-foreground data-[state=active]:text-foreground transition-none"
-                  >
-                    {cat}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+          {/* Recommendation banner */}
+          {mode === "result" && needsRec && recs.length > 0 && (
+            <div className="mx-5 mt-4 bg-amber-50 border border-amber-100 rounded-xl p-3">
+              <div className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-amber-800 mb-2">Better matches for your skin tone:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {recs.map(rec => (
+                      <button
+                        key={rec.id}
+                        onClick={() => toggleProduct(rec)}
+                        className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-lg border border-amber-100 text-xs font-medium text-amber-900 hover:border-amber-300 transition-colors shadow-sm"
+                      >
+                        <div className="w-3 h-3 rounded-full flex-shrink-0 shadow-inner" style={{ backgroundColor: rec.color }} />
+                        {rec.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
+          )}
 
-            <div className="flex-1 overflow-y-auto p-6">
-              {["lips", "eyes", "blush", "foundation"].map(cat => {
-                const categoryProducts = PRODUCTS.filter(p => p.category === cat);
-                const selected = selectedProducts[cat as Category];
-                const needsRecommendation = selected && skinTone && !selected.suitableFor.includes(skinTone);
-                
+          {/* Product grid */}
+          <div className="flex-1 overflow-y-auto px-5 py-4">
+            <div className="grid grid-cols-2 gap-3">
+              {categoryProducts.map(product => {
+                const isSelected = selected?.id === product.id;
                 return (
-                  <TabsContent key={cat} value={cat} className="mt-0 h-full flex flex-col focus-visible:outline-none">
-                    
-                    {needsRecommendation && (
-                      <div className="bg-orange-50 border border-orange-100 p-4 rounded-md mb-6 animate-in fade-in slide-in-from-top-2">
-                        <div className="flex items-start gap-3">
-                          <Info className="w-5 h-5 text-orange-400 mt-0.5" />
-                          <div>
-                            <p className="text-sm text-orange-900 font-medium mb-3">
-                              This shade may not be the best match for your detected skin tone. Try these instead:
-                            </p>
-                            <div className="flex gap-3">
-                              {getRecommendations(cat as Category).map(rec => (
-                                <button
-                                  key={rec.id}
-                                  onClick={() => setSelectedProducts(prev => ({ ...prev, [cat]: rec }))}
-                                  className="flex items-center gap-2 bg-white px-2 py-1.5 rounded shadow-sm hover:shadow-md transition-shadow text-xs"
-                                >
-                                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: rec.color }} />
-                                  <span className="font-medium truncate max-w-[80px]">{rec.name}</span>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                  <button
+                    key={product.id}
+                    onClick={() => { if (mode === "result") toggleProduct(product); }}
+                    data-testid={`product-card-${product.id}`}
+                    className={cn(
+                      "text-left p-3 rounded-xl border transition-all duration-150 group",
+                      mode !== "result" && "opacity-60 cursor-default",
+                      mode === "result" && "hover:shadow-md cursor-pointer",
+                      isSelected
+                        ? "border-[#7B1C2E] ring-1 ring-[#7B1C2E] bg-[#FDF8F9] shadow-sm"
+                        : "border-[#EDE6DF] bg-white hover:border-[#C4A99E]"
                     )}
-
-                    <div className="grid grid-cols-2 gap-4">
-                      {categoryProducts.map(product => {
-                        const isSelected = selected?.id === product.id;
-                        return (
-                          <button
-                            key={product.id}
-                            onClick={() => setSelectedProducts(prev => ({ 
-                              ...prev, 
-                              [cat]: prev[cat as Category]?.id === product.id ? null : product 
-                            }))}
-                            className={cn(
-                              "text-left p-4 rounded-xl border transition-all duration-200 group relative overflow-hidden",
-                              isSelected 
-                                ? "border-primary bg-primary/5 ring-1 ring-primary shadow-sm" 
-                                : "border-border hover:border-primary/40 hover:bg-muted/50"
-                            )}
-                          >
-                            <div className="mb-3 flex justify-between items-start">
-                              <div 
-                                className={cn(
-                                  "w-10 h-10 rounded-full shadow-inner transition-transform group-hover:scale-110",
-                                  isSelected && "ring-2 ring-offset-2 ring-primary"
-                                )}
-                                style={{ backgroundColor: product.color }}
-                              />
-                              <span className="text-sm font-medium text-muted-foreground">${product.price}</span>
-                            </div>
-                            <h3 className="font-serif font-medium text-foreground">{product.name}</h3>
-                            <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">{product.brand}</p>
-                          </button>
-                        );
-                      })}
+                  >
+                    {/* Shade swatch */}
+                    <div className="flex items-start justify-between mb-2.5">
+                      <div
+                        className={cn(
+                          "w-9 h-9 rounded-full shadow-inner border border-black/10 transition-transform",
+                          isSelected && "ring-2 ring-offset-1 ring-[#7B1C2E]",
+                          mode === "result" && "group-hover:scale-110"
+                        )}
+                        style={{ backgroundColor: product.color }}
+                      />
+                      <span className="text-[11px] font-medium text-[#9E8A7C]">${product.price}</span>
                     </div>
-                  </TabsContent>
+                    <p className="font-serif text-sm font-semibold text-[#3A2822] leading-tight">{product.name}</p>
+                    <p className="text-[10px] text-[#B5A39A] mt-0.5 uppercase tracking-wide">{product.brand}</p>
+                    <p className="text-[10px] text-[#C4A99E] mt-0.5 italic leading-tight">{product.shade}</p>
+                  </button>
                 );
               })}
             </div>
-          </Tabs>
-        </section>
+
+            {mode !== "result" && (
+              <div className="mt-6 flex flex-col items-center gap-2 py-4 text-center">
+                <div className="w-10 h-10 rounded-full bg-[#F7EFEA] flex items-center justify-center">
+                  <ImagePlus className="w-5 h-5 text-[#C4A99E]" />
+                </div>
+                <p className="text-sm text-[#9E8A7C]">Upload a photo to try on products</p>
+              </div>
+            )}
+          </div>
+        </aside>
       </main>
     </div>
   );
