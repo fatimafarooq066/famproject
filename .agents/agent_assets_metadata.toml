@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "0WYyrAL9tHtOzLy6iCcch"
+uri = "file://fam-fashion-laravel.tar.gz"
+type = "unspecified"
+title = "FAM Fashion – Complete Laravel Project"
