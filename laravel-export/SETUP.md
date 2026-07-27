@@ -34,6 +34,7 @@ Copy each folder from this export **into your Laravel project root**:
 | `public/js/fam-fashion.js` | `public/js/` |
 | `public/products/*.png` | `public/products/` ← **ALL product images** |
 | `routes/web.php` | `routes/` (replace existing) |
+<<<<<<< HEAD
 | `app/Mcp/McpServer.php` | `app/Mcp/` |
 | `app/Mcp/Tools/ProductTools.php` | `app/Mcp/Tools/` |
 | `app/Services/ClaudeAgentService.php` | `app/Services/` |
@@ -42,6 +43,8 @@ Copy each folder from this export **into your Laravel project root**:
 | `resources/views/partials/chat-widget.blade.php` | `resources/views/partials/` |
 | `public/css/fam-chat.css` | `public/css/` |
 | `public/js/fam-chat.js` | `public/js/` |
+=======
+>>>>>>> fa82c8a55c1bfea9cbf43c4f4996f1189704b607
 
 ---
 
@@ -142,6 +145,7 @@ Option C — Admin panel: install `filament/filament` or `backpack/backpack` for
 | `suitable_for` | json | Array of skin tones: `["fair","light","medium","tan","deep"]` |
 | `image` | varchar | Filename in `public/products/` |
 | `shade_image` | varchar | Shade swatch filename (nullable) |
+<<<<<<< HEAD
 
 ---
 
@@ -211,3 +215,5 @@ an `Order` model), register another tool in
 call its `register()` from a service provider's `boot()` method. Every
 registered tool is automatically available to both the chat widget and
 any external MCP client, with no other wiring needed.
+=======
+>>>>>>> fa82c8a55c1bfea9cbf43c4f4996f1189704b607

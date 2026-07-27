@@ -13,18 +13,26 @@
 
     <!-- App CSS -->
     <link rel="stylesheet" href="{{ asset('css/fam-fashion.css') }}" />
+<<<<<<< HEAD
     <link rel="stylesheet" href="{{ asset('css/fam-chat.css') }}" />
+=======
+>>>>>>> fa82c8a55c1bfea9cbf43c4f4996f1189704b607
 
     @stack('head')
 </head>
 <body>
     @yield('content')
 
+<<<<<<< HEAD
     @include('partials.chat-widget')
 
     <!-- MediaPipe (browser-only, must stay in JS) -->
     <script type="module" src="{{ asset('js/fam-fashion.js') }}"></script>
     <script src="{{ asset('js/fam-chat.js') }}"></script>
+=======
+    <!-- MediaPipe (browser-only, must stay in JS) -->
+    <script type="module" src="{{ asset('js/fam-fashion.js') }}"></script>
+>>>>>>> fa82c8a55c1bfea9cbf43c4f4996f1189704b607
 
     @stack('scripts')
 </body>
