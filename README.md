@@ -1,5 +1,7 @@
 # FAM Fashion Hub — Virtual Try-On & AI Shopping Assistant
 
+**Live app:** https://virtual-makeup-try--companysmartei.replit.app
+
 A Laravel-based makeup virtual try-on experience with a browser-based
 face try-on tool, a product catalogue, and an AI customer support chat
 agent backed by a custom **MCP (Model Context Protocol) server**.
@@ -8,9 +10,39 @@ This is one of two Final Year Projects — an AI-powered fashion/beauty
 e-commerce platform combining computer-vision try-on with an AI
 shopping assistant grounded in real product data.
 
----
+## The problem it solves
 
-## ✨ Features
+Buying makeup online is a gamble: a shade that looks perfect in a
+product photo can look completely different against a real skin tone,
+and customers have no way to check without ordering it and hoping. At
+the same time, the questions customers actually have — "will this shade
+suit me," "what's your cheapest matte lipstick," "what's in this
+finish" — usually mean waiting on a human agent who may not be
+available outside business hours.
+
+FAM Fashion Hub solves this for **customers** by letting them try shades
+on their own face through the browser before buying, and by giving them
+an AI assistant that answers product questions instantly and only from
+the real catalogue (never a guess). It solves it for the **store** by
+handling routine product Q&A automatically, escalating to a human only
+for what's actually out of scope (orders, complaints).
+
+## Contents
+
+- [Live demo](#live-app)
+- [Features](#features)
+- [The AI feature](#the-ai-feature)
+- [Tools, services & models used](#tools-services--models-used)
+- [Screenshots](#screenshots)
+- [Tech stack](#-tech-stack)
+- [Project structure](#-project-structure)
+- [Requirements](#️-requirements)
+- [How to run the project](#-setup)
+- [API endpoints](#-api-endpoints)
+- [Product schema](#️-product-schema)
+- [Roadmap](#️-roadmap)
+
+## Features
 
 - **Live virtual try-on** — webcam-based face tracking (MediaPipe) that
   overlays lipstick, eyeshadow, and blush shades on the user's face in
@@ -26,7 +58,85 @@ shopping assistant grounded in real product data.
   HTTP at `/mcp` for any external MCP client (Claude Desktop, Claude
   Code, etc.).
 
----
+## The AI feature
+
+A floating chat widget on every page lets customers ask about products,
+shades, prices, and what suits their skin tone in plain language,
+instead of browsing or filtering manually. It's grounded in the real
+catalogue — it never invents a product, price, or shade that doesn't
+exist.
+
+**What it does:**
+- Answers free-text product questions ("what's your cheapest matte
+  lipstick under 3000?")
+- Recommends products for a stated skin tone
+- Looks up prices and price ranges by category
+- Escalates to a human for anything outside the catalogue (orders,
+  refunds, complaints) instead of guessing
+
+**How it's grounded — the MCP tools** (`App\Mcp\Tools\ProductTools`):
+
+| Tool | Purpose |
+|---|---|
+| `search_products` | Free-text/category/brand/skin-tone/price search |
+| `get_product` | Full detail for one product by ID |
+| `list_categories` | Categories with product counts |
+| `recommend_for_skin_tone` | Curated picks for a stated skin tone |
+| `get_price_range` | Min/max/avg price, whole catalogue or by category |
+| `contact_human_support` | Escalates anything outside product Q&A |
+
+**System prompt behind it** (`app/Services/ClaudeAgentService.php`):
+
+```
+You are the FAM Fashion Hub shopping assistant. You help customers
+find makeup products, shades, and prices, and answer general
+questions about the store. Always use the provided tools to look
+up real product data instead of guessing — never invent product
+names, prices, or availability. Keep replies short, warm, and
+conversational (2-4 sentences), and use PKR for prices. If a
+request is outside the product catalogue (orders, refunds,
+complaints), use the contact_human_support tool.
+```
+
+The agent runs a standard tool-use loop: the message and tool
+definitions go to Claude, any `tool_use` calls are executed in-process
+against the same `McpServer` the `/mcp` HTTP endpoint uses, and results
+are fed back until Claude returns a final text answer (capped at 5
+tool-call rounds to avoid runaway loops).
+
+## Tools, services & models used
+
+| Category | Used |
+|---|---|
+| Backend framework | Laravel (PHP 8.1+) |
+| Database | MySQL (or any Laravel-supported DB) |
+| Frontend | Blade templates, vanilla JS, CSS |
+| Face tracking / try-on | MediaPipe, HTML5 Canvas |
+| AI model | Claude (Anthropic), model `claude-sonnet-5` |
+| Agent grounding | Custom MCP server — JSON-RPC 2.0 over HTTP (`/mcp`), also called in-process |
+| Hosting | Replit Deployments |
+
+## Screenshots
+
+> ⚠️ **TODO — add at least 3 screenshots.** I don't have browser access
+> to the live Replit deployment from here to capture these myself —
+> grab them from the live app and drop the image files into a
+> `docs/screenshots/` folder in the repo, then reference them like this:
+
+```markdown
+### Virtual try-on in action
+![Virtual try-on](docs/screenshots/virtual-tryon.png)
+
+### Product catalogue
+![Product catalogue](docs/screenshots/catalogue.png)
+
+### AI chat answering a product question
+![AI chat](docs/screenshots/ai-chat.png)
+```
+
+Good screens to capture: the webcam try-on view with a shade applied,
+the product catalogue/browse view, and the chat widget open mid-answer
+(ideally showing it citing a real price or shade).
 
 ## 🧱 Tech stack
 
@@ -38,8 +148,6 @@ shopping assistant grounded in real product data.
 | Agent grounding | Custom MCP server (JSON-RPC 2.0 over HTTP) |
 | Database | MySQL (or any Laravel-supported DB) |
 | Frontend | Blade templates, vanilla JS, CSS |
-
----
 
 ## 📁 Project structure
 
@@ -74,16 +182,12 @@ public/
 routes/web.php
 ```
 
----
-
 ## ⚙️ Requirements
 
 - PHP 8.1+
 - Composer
 - MySQL (or another Laravel-supported database)
 - An [Anthropic API key](https://console.anthropic.com/) (for the AI chat agent)
-
----
 
 ## 🚀 Setup
 
@@ -153,8 +257,6 @@ php artisan serve
 Visit `http://localhost:8000` for the try-on page. The chat bubble is
 in the bottom-right corner of every page.
 
----
-
 ## 🔌 API endpoints
 
 | Method | Route | Purpose |
@@ -165,27 +267,6 @@ in the bottom-right corner of every page.
 | `GET` | `/api/products/category/{category}` | Products by category |
 | `POST` | `/api/chat` | Send a message to the AI shopping assistant |
 | `POST` | `/mcp` | MCP JSON-RPC endpoint (`initialize`, `tools/list`, `tools/call`) |
-
----
-
-## 🤖 How the AI chat agent works
-
-```
-Browser widget (fam-chat.js)
-   → POST /api/chat  (ChatController)
-       → ClaudeAgentService: sends the conversation + MCP tool
-         definitions to Claude, executes any tool_use calls
-         in-process against McpServer, loops until Claude returns
-         a final answer
-           → App\Mcp\Tools\ProductTools
-             (search_products, get_product, list_categories,
-              recommend_for_skin_tone, get_price_range,
-              contact_human_support)
-```
-
-The agent is instructed to always use these tools instead of guessing —
-so it never invents a product, shade, or price that isn't actually in
-the catalogue.
 
 ### Using the MCP server from an external client
 
@@ -203,8 +284,6 @@ Point any MCP-compatible client at it:
 { "mcpServers": { "fam-fashion": { "url": "http://localhost:8000/mcp" } } }
 ```
 
----
-
 ## 🗂️ Product schema
 
 | Field | Type | Notes |
@@ -220,16 +299,12 @@ Point any MCP-compatible client at it:
 | `image` | string | Filename in `public/products/` |
 | `shade_image` | string, nullable | Shade swatch filename |
 
----
-
 ## 🛣️ Roadmap
 
 - Orders / checkout flow, with a matching MCP tool for order status
 - Vendor management in an admin panel
 - Voice search
 - Full FASHN.AI / Hugging Face IDM-VTON try-on integration
-
----
 
 ## 📄 License
 
