@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -59,52 +60,53 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  /* GlowAR Theme - Warm, editorial, sleek */
-  /* Background: Creamy off-white */
-  --background: 40 20% 98%;
-  --foreground: 0 0% 10%;
+  /* FAM Fashion Theme - Luxury, warm, confident */
+  /* Background: Creamy warm off-white #FAF6F2 */
+  --background: 30 33% 96%;
+  /* Foreground: Warm brown #3A2822 */
+  --foreground: 15 26% 18%;
 
   /* Borders: subtle tan */
   --border: 30 10% 90%;
   --input: 30 10% 90%;
-  --ring: 345 68% 17%;
+  --ring: 349 63% 30%;
 
   /* Cards: pure white */
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 10%;
+  --card-foreground: 15 26% 18%;
   --card-border: 30 10% 90%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 10%;
+  --popover-foreground: 15 26% 18%;
   --popover-border: 30 10% 90%;
 
-  /* Primary: Deep Wine / Burgundy (#4A0E17 roughly) */
-  --primary: 351 68% 17%;
-  --primary-foreground: 0 0% 100%;
+  /* Primary: Deep Wine / Burgundy #7B1C2E */
+  --primary: 349 63% 30%;
+  --primary-foreground: 30 33% 96%;
 
-  /* Secondary: Soft blush pink */
-  --secondary: 350 40% 90%;
-  --secondary-foreground: 351 68% 17%;
+  /* Secondary: Soft rose #C4A99E */
+  --secondary: 18 25% 69%;
+  --secondary-foreground: 15 26% 18%;
 
   --muted: 30 10% 95%;
   --muted-foreground: 30 10% 40%;
 
-  --accent: 350 40% 90%;
-  --accent-foreground: 351 68% 17%;
+  --accent: 18 25% 69%;
+  --accent-foreground: 15 26% 18%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 351 68% 17%;
-  --chart-2: 350 40% 90%;
-  --chart-3: 30 10% 40%;
-  --chart-4: 0 0% 10%;
-  --chart-5: 40 20% 98%;
+  --chart-1: 349 63% 30%;
+  --chart-2: 18 25% 69%;
+  --chart-3: 15 26% 18%;
+  --chart-4: 30 10% 40%;
+  --chart-5: 30 33% 96%;
 
   --app-font-sans: 'Plus Jakarta Sans', sans-serif;
-  --app-font-serif: 'Playfair Display', serif;
+  --app-font-serif: 'Cormorant Garamond', serif;
   --app-font-mono: 'Space Mono', monospace;
-  --radius: 0.25rem;
+  --radius: 0rem; /* Sharp edges for luxury feel */
 
   --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0,0.02);
   --shadow-xs: 0px 2px 0px 0px rgba(0,0,0,0.04);
@@ -131,33 +133,33 @@
   --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .09);
 
-  /* Dark mode GlowAR */
-  --background: 0 0% 5%;
-  --foreground: 0 0% 98%;
+  /* Dark mode */
+  --background: 15 26% 10%;
+  --foreground: 30 33% 96%;
 
   --border: 0 0% 15%;
   --input: 0 0% 15%;
-  --ring: 351 68% 50%;
+  --ring: 349 63% 30%;
 
-  --card: 0 0% 8%;
-  --card-foreground: 0 0% 98%;
+  --card: 15 26% 12%;
+  --card-foreground: 30 33% 96%;
   --card-border: 0 0% 15%;
 
-  --popover: 0 0% 8%;
-  --popover-foreground: 0 0% 98%;
+  --popover: 15 26% 12%;
+  --popover-foreground: 30 33% 96%;
   --popover-border: 0 0% 15%;
 
-  --primary: 351 68% 50%;
+  --primary: 349 63% 40%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 98%;
+  --secondary: 18 25% 69%;
+  --secondary-foreground: 15 26% 10%;
 
-  --muted: 0 0% 12%;
+  --muted: 0 0% 15%;
   --muted-foreground: 0 0% 60%;
 
   --accent: 0 0% 15%;
-  --accent-foreground: 0 0% 98%;
+  --accent-foreground: 30 33% 96%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;

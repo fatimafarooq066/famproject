@@ -13,10 +13,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('shade');
             $table->enum('category', ['lips', 'eyes', 'blush', 'foundation']);
-            $table->string('color', 10);       // hex e.g. #9B1B1B
-            $table->integer('price');           // in PKR
+            $table->string('color', 7);       // hex colour e.g. #9B1B1B
+            $table->unsignedInteger('price'); // PKR
             $table->string('brand');
-            $table->json('suitable_for');       // ["fair","light","medium","tan","deep"]
+            $table->string('finish')->default('');
+            $table->json('suitable_for');     // ["fair","light","medium","tan","deep"]
+            $table->string('image');          // filename in public/products/
+            $table->string('shade_image')->nullable();
             $table->timestamps();
         });
     }

@@ -4,11 +4,11 @@
 - PHP 8.1+
 - Composer
 - MySQL / MariaDB
-- Laravel 10 or 11
+- Node.js (optional — only for compiling assets with Vite/Mix)
 
 ---
 
-## Step 1 – Create a new Laravel project
+## 1. Create a new Laravel project
 
 ```bash
 composer create-project laravel/laravel fam-fashion
@@ -17,26 +17,27 @@ cd fam-fashion
 
 ---
 
-## Step 2 – Copy these files into your project
+## 2. Copy the exported files
 
-Copy the files from this export into the matching paths in your Laravel project:
+Copy each folder from this export **into your Laravel project root**:
 
-```
-routes/web.php                           → routes/web.php
-app/Http/Controllers/TryOnController.php → app/Http/Controllers/TryOnController.php
-app/Models/Product.php                   → app/Models/Product.php
-database/migrations/2024_01_01_...php   → database/migrations/
-database/seeders/ProductSeeder.php       → database/seeders/ProductSeeder.php
-database/seeders/DatabaseSeeder.php      → database/seeders/DatabaseSeeder.php
-resources/views/layouts/app.blade.php   → resources/views/layouts/app.blade.php
-resources/views/tryon/index.blade.php   → resources/views/tryon/index.blade.php
-public/css/fam-fashion.css              → public/css/fam-fashion.css
-public/js/fam-fashion.js               → public/js/fam-fashion.js
-```
+| Source (this export) | Destination (Laravel root) |
+|---|---|
+| `app/Http/Controllers/TryOnController.php` | `app/Http/Controllers/` |
+| `app/Models/Product.php` | `app/Models/` |
+| `database/migrations/` | `database/migrations/` |
+| `database/seeders/ProductSeeder.php` | `database/seeders/` |
+| `database/seeders/DatabaseSeeder.php` | `database/seeders/` |
+| `resources/views/layouts/app.blade.php` | `resources/views/layouts/` |
+| `resources/views/tryon/index.blade.php` | `resources/views/tryon/` |
+| `public/css/fam-fashion.css` | `public/css/` |
+| `public/js/fam-fashion.js` | `public/js/` |
+| `public/products/*.png` | `public/products/` ← **ALL product images** |
+| `routes/web.php` | `routes/` (replace existing) |
 
 ---
 
-## Step 3 – Configure the database
+## 3. Configure the database
 
 Edit `.env`:
 
@@ -52,64 +53,84 @@ DB_PASSWORD=your_password
 Create the database:
 
 ```sql
-CREATE DATABASE fam_fashion;
+CREATE DATABASE fam_fashion CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 ---
 
-## Step 4 – Run migrations and seed
+## 4. Run migrations and seed products
 
 ```bash
 php artisan migrate
-php artisan db:seed
+php artisan db:seed --class=ProductSeeder
 ```
-
-This creates the `products` table and inserts all 30 makeup products.
 
 ---
 
-## Step 5 – Run the app
+## 5. Start the server
 
 ```bash
 php artisan serve
 ```
 
-Visit: http://127.0.0.1:8000
+Visit **http://127.0.0.1:8000** — the try-on app will load.
 
 ---
 
-## How it works
+## 6. How it works
 
-| Layer       | Technology                          |
-|-------------|--------------------------------------|
-| Backend     | Laravel (PHP) – routes, controllers, models, DB |
-| Views       | Blade templates                      |
-| Styling     | Plain CSS (`public/css/fam-fashion.css`) |
-| Face AI     | MediaPipe Tasks Vision (loaded from CDN, runs in browser) |
-| Makeup AR   | HTML5 Canvas API (vanilla JS)        |
-| Database    | MySQL via Eloquent ORM               |
+### Backend (Laravel)
+- `TryOnController@index` — fetches all products grouped by category, renders the Blade view
+- `GET /api/products` — JSON endpoint (supports `?category=lips&skin_tone=medium` filters)
+- `GET /api/products/{id}` — single product JSON
+- Products stored in MySQL; images served as static files from `public/products/`
 
-### Important note on MediaPipe
-The face detection and makeup rendering run **entirely in the user's browser** using JavaScript.
-This is unavoidable — MediaPipe is a client-side library. The Laravel backend only serves
-the product data; the AI try-on is frontend-only.
+### Frontend (Vanilla JS)
+- Face landmark detection runs **100% in the browser** via MediaPipe (no PHP involvement)
+- `window.ALL_PRODUCTS` is populated by the Blade view at page load (no AJAX needed)
+- Canvas blend modes (multiply / screen) create realistic-looking makeup
+- Cart state is client-side only; wire up to a checkout system as needed
 
 ---
 
-## Adding more products
+## 7. Adding new products
 
-Either insert directly via the seeder, or add an admin route:
+Option A — Seeder (recommended for bulk):
+1. Add product rows to `ProductSeeder.php`
+2. Run `php artisan db:seed --class=ProductSeeder`
 
-```php
-// In routes/web.php
-Route::post('/admin/products', [ProductController::class, 'store'])->middleware('auth');
+Option B — Tinker (quick one-off):
+```bash
+php artisan tinker
+App\Models\Product::create([
+    'name'        => 'New Lip',
+    'shade'       => 'Matte',
+    'category'    => 'lips',
+    'color'       => '#FF0000',
+    'price'       => 5000,
+    'brand'       => 'Brand Name',
+    'finish'      => 'Matte',
+    'suitable_for'=> ['medium','tan'],
+    'image'       => 'new-lip.png',
+]);
 ```
 
-Product fields:
-- `name` – product name (e.g. "Ruby Woo")
-- `shade` – finish/shade name (e.g. "Retro Matte")
-- `category` – one of: `lips`, `eyes`, `blush`, `foundation`
-- `color` – hex color (e.g. `#9B1B1B`)
-- `price` – price in PKR (integer)
-- `brand` – brand name
-- `suitable_for` – JSON array of skin tones: `["fair","light","medium","tan","deep"]`
+Option C — Admin panel: install `filament/filament` or `backpack/backpack` for a full CRUD UI.
+
+---
+
+## 8. Column reference
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | bigint unsigned | Auto-increment |
+| `name` | varchar | Product display name |
+| `shade` | varchar | Shade descriptor |
+| `category` | enum | `lips` / `eyes` / `blush` / `foundation` |
+| `color` | varchar(7) | Hex colour `#RRGGBB` used for AR overlay |
+| `price` | unsigned int | PKR (Pakistani Rupees) |
+| `brand` | varchar | Brand name |
+| `finish` | varchar | e.g. Matte, Shimmer, Satin |
+| `suitable_for` | json | Array of skin tones: `["fair","light","medium","tan","deep"]` |
+| `image` | varchar | Filename in `public/products/` |
+| `shade_image` | varchar | Shade swatch filename (nullable) |
