@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Virtual Makeup Try-On"
+version = "1.0.0"
+id = "artifacts/makeup-tryon"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23910
+
+[services.development]
+run = "pnpm --filter @workspace/makeup-tryon run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/makeup-tryon", "run", "build" ]
+publicDir = "artifacts/makeup-tryon/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23910"
+BASE_PATH = "/"

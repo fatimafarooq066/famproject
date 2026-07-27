@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════════
+   FAM Assistant — customer support chat widget
+   ═══════════════════════════════════════════════ */
+
+#fam-chat-root { position: fixed; right: 20px; bottom: 20px; z-index: 1000; font-family: 'Inter', sans-serif; }
+
+#fam-chat-toggle {
+    width: 56px; height: 56px; border-radius: 50%; border: none;
+    background: var(--primary); color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-lg); transition: background .2s, transform .15s;
+}
+#fam-chat-toggle:hover { background: var(--primary-d); transform: translateY(-1px); }
+
+.fam-chat-panel {
+    position: absolute; right: 0; bottom: 72px;
+    width: min(360px, calc(100vw - 40px)); height: min(520px, calc(100vh - 140px));
+    background: var(--panel-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column; overflow: hidden;
+    animation: fam-chat-pop .18s ease-out;
+}
+@keyframes fam-chat-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+.fam-chat-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; background: var(--primary); color: #fff; flex-shrink: 0;
+}
+.fam-chat-header-info { display: flex; align-items: center; gap: 10px; }
+.fam-chat-avatar {
+    width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.18);
+    display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+}
+.fam-chat-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; line-height: 1.2; }
+.fam-chat-subtitle { font-size: 11px; opacity: .85; display: flex; align-items: center; gap: 5px; }
+.fam-chat-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; display: inline-block; }
+#fam-chat-minimize {
+    background: transparent; border: none; color: #fff; font-size: 20px; line-height: 1;
+    cursor: pointer; width: 28px; height: 28px; border-radius: 6px; opacity: .85;
+}
+#fam-chat-minimize:hover { background: rgba(255,255,255,.15); opacity: 1; }
+
+.fam-chat-messages {
+    flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px;
+    background: var(--bg);
+}
+.fam-chat-msg { max-width: 82%; padding: 10px 13px; border-radius: 14px; font-size: 13.5px; line-height: 1.45; white-space: pre-wrap; word-wrap: break-word; }
+.fam-chat-msg--assistant { align-self: flex-start; background: var(--white); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; }
+.fam-chat-msg--user { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
+.fam-chat-msg--error { align-self: flex-start; background: #FEF2F2; border: 1px solid #FEE2E2; color: #B91C1C; border-bottom-left-radius: 4px; }
+
+.fam-chat-typing {
+    display: flex; gap: 4px; padding: 0 16px 8px; background: var(--bg);
+}
+.fam-chat-typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--light);
+    animation: fam-chat-bounce 1.2s infinite ease-in-out;
+}
+.fam-chat-typing span:nth-child(2) { animation-delay: .15s; }
+.fam-chat-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes fam-chat-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+
+.fam-chat-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); background: var(--white); flex-shrink: 0; }
+#fam-chat-input {
+    flex: 1; border: 1px solid var(--border2); border-radius: 20px; padding: 9px 14px;
+    font-size: 13.5px; font-family: inherit; outline: none; background: var(--bg); color: var(--text);
+}
+#fam-chat-input:focus { border-color: var(--primary); }
+.fam-chat-form button[type="submit"] {
+    width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--primary);
+    color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+}
+.fam-chat-form button[type="submit"]:hover { background: var(--primary-d); }
+.fam-chat-form button[type="submit"]:disabled { opacity: .5; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+    #fam-chat-root { right: 12px; bottom: 12px; }
+    .fam-chat-panel { width: calc(100vw - 24px); height: calc(100vh - 100px); bottom: 68px; }
+}
